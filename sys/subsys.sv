@@ -24,114 +24,241 @@
         `define USE_SDRAM
 `endif
 
-module sys_top
+module subsys
   #
   (
-   parameter FPGA_FAMILY = "CYCLONEV"
+   parameter FPGA_FAMILY = "ZYNQMP"
    )
   (
    /////////// CLOCK //////////
-   input         FPGA_CLK1_50,
-   input         FPGA_CLK2_50,
-   input         FPGA_CLK3_50,
+   input wire      FPGA_CLK1_50,
+   input wire      FPGA_CLK2_50,
+   input wire      FPGA_CLK3_50,
 
    //////////// HDMI //////////
-   output        HDMI_I2C_SCL,
-   inout         HDMI_I2C_SDA,
+   output          HDMI_I2C_SCL,
+   inout           HDMI_I2C_SDA,
 
-   output        HDMI_MCLK,
-   output        HDMI_SCLK,
-   output        HDMI_LRCLK,
-   output        HDMI_I2S,
+   output          HDMI_SCLK,
+   output          HDMI_LRCLK,
+   output          HDMI_I2S,
 
-   output        HDMI_TX_CLK,
-   output        HDMI_TX_DE,
-   output [23:0] HDMI_TX_D,
-   output        HDMI_TX_HS,
-   output        HDMI_TX_VS,
+   output          HDMI_TX_CLK,
+   output          HDMI_TX_DE,
+   output [23:0]   HDMI_TX_D,
+   output          HDMI_TX_HS,
+   output          HDMI_TX_VS,
 
-   input         HDMI_TX_INT,
+   input           HDMI_TX_INT,
 
    //////////// SDR ///////////
-   output [12:0] SDRAM_A,
-   inout [15:0]  SDRAM_DQ,
-   output        SDRAM_DQML,
-   output        SDRAM_DQMH,
-   output        SDRAM_nWE,
-   output        SDRAM_nCAS,
-   output        SDRAM_nRAS,
-   output        SDRAM_nCS,
-   output [1:0]  SDRAM_BA,
-   output        SDRAM_CLK,
-   output        SDRAM_CKE,
+   output [12:0]   SDRAM_A,
+   inout [15:0]    SDRAM_DQ,
+   output          SDRAM_DQML,
+   output          SDRAM_DQMH,
+   output          SDRAM_nWE,
+   output          SDRAM_nCAS,
+   output          SDRAM_nRAS,
+   output          SDRAM_nCS,
+   output [1:0]    SDRAM_BA,
+   output          SDRAM_CLK,
+   output          SDRAM_CKE,
 
 `ifdef DUAL_SDRAM
    ////////// SDR #2 //////////
-   output [12:0] SDRAM2_A,
-   inout [15:0]  SDRAM2_DQ,
-   output        SDRAM2_nWE,
-   output        SDRAM2_nCAS,
-   output        SDRAM2_nRAS,
-   output        SDRAM2_nCS,
-   output [1:0]  SDRAM2_BA,
-   output        SDRAM2_CLK,
+   output [12:0]   SDRAM2_A,
+   inout [15:0]    SDRAM2_DQ,
+   output          SDRAM2_nWE,
+   output          SDRAM2_nCAS,
+   output          SDRAM2_nRAS,
+   output          SDRAM2_nCS,
+   output [1:0]    SDRAM2_BA,
+   output          SDRAM2_CLK,
 
 `else
    //////////// VGA ///////////
-   output [5:0]  VGA_R,
-   output [5:0]  VGA_G,
-   output [5:0]  VGA_B,
-   inout         VGA_HS, // VGA_HS is secondary SD card detect when VGA_EN = 1 (inactive)
-   output        VGA_VS,
-   input         VGA_EN, // active low
+   output [5:0]    VGA_R,
+   output [5:0]    VGA_G,
+   output [5:0]    VGA_B,
+   inout           VGA_HS, // VGA_HS is secondary SD card detect when VGA_EN = 1 (inactive)
+   output          VGA_VS,
+   input           VGA_EN, // active low
 
    /////////// AUDIO //////////
-   output        AUDIO_L,
-   output        AUDIO_R,
-   output        AUDIO_SPDIF,
+   output          AUDIO_L,
+   output          AUDIO_R,
+   output          AUDIO_SPDIF,
 
    //////////// SDIO ///////////
-   inout [3:0]   SDIO_DAT,
-   inout         SDIO_CMD,
-   output        SDIO_CLK,
+   inout [3:0]     SDIO_DAT,
+   inout           SDIO_CMD,
+   output          SDIO_CLK,
 
    //////////// I/O ///////////
-   output        LED_USER,
-   output        LED_HDD,
-   output        LED_POWER,
-   input         BTN_USER,
-   input         BTN_OSD,
-   input         BTN_RESET,
+   output          LED_USER,
+   output          LED_HDD,
+   output          LED_POWER,
+   input           BTN_USER,
+   input           BTN_OSD,
+   input           BTN_RESET,
 `endif
 
    ////////// I/O ALT /////////
-   output        SD_SPI_CS,
-   input         SD_SPI_MISO,
-   output        SD_SPI_CLK,
-   output        SD_SPI_MOSI,
+   output          SD_SPI_CS,
+   input           SD_SPI_MISO,
+   output          SD_SPI_CLK,
+   output          SD_SPI_MOSI,
 
-   inout         SDCD_SPDIF,
-   output        IO_SCL,
-   inout         IO_SDA,
+   inout           SDCD_SPDIF,
+   output          IO_SCL,
+   inout           IO_SDA,
 
    ////////// ADC //////////////
-   output        ADC_SCK,
-   input         ADC_SDO,
-   output        ADC_SDI,
-   output        ADC_CONVST,
+   output          ADC_SCK,
+   input           ADC_SDO,
+   output          ADC_SDI,
+   output          ADC_CONVST,
 
    ////////// MB KEY ///////////
-   input [1:0]   KEY,
+   input [1:0]     KEY,
 
    ////////// MB SWITCH ////////
-   input [3:0]   SW,
+   input [3:0]     SW,
 
    ////////// MB LED ///////////
-   output [7:0]  LED,
+   output [7:0]    LED,
 
    ///////// USER IO ///////////
-   inout [6:0]   USER_IO
+   inout [6:0]     USER_IO,
+
+   // HPS interfaces
+   output [31:0]   gp_in,
+   input [31:0]    gp_out,
+
+   input           uart_cts,
+   output          uart_rts,
+   input           uart_rxd,
+   output          uart_txd,
+   output          uart_dtr,
+   input           uart_dsr,
+
+   input           aspi_ss,
+   input           aspi_sck,
+   input           aspi_mosi,
+   output          aspi_miso,
+
+   output [63:0]   f2h_irq,
+
+   output [1:0]    clkselect,
+   output [2:0]    inclk,
+   input           outclk,
+
+   output logic    reset_req,
+   input           clk_100m,
+   input           reset,
+
+   output          reset_hps_cold_req,
+
+   output          ram_clk,
+   output [28:0]   ram_address,
+   output [7:0]    ram_burstcount,
+   input           ram_waitrequest,
+   input [63:0]    ram_readdata,
+   input           ram_readdatavalid,
+   output          ram_read,
+   output [63:0]   ram_writedata,
+   output [7:0]    ram_byteenable,
+   output          ram_write,
+
+   output          clk_audio,
+   output [28:0]   ram2_address,
+   output [7:0]    ram2_burstcount,
+   input           ram2_waitrequest,
+   input [63:0]    ram2_readdata,
+   input           ram2_readdatavalid,
+   output          ram2_read,
+   output [63:0]   ram2_writedata,
+   output [7:0]    ram2_byteenable,
+   output          ram2_write,
+
+   output [27:0]   vbuf_address,
+   output [7:0]    vbuf_burstcount,
+   input           vbuf_waitrequest,
+   input [127:0]   vbuf_readdata,
+   input           vbuf_readdatavalid,
+   output          vbuf_read,
+   output [127:0]  vbuf_writedata,
+   output [15:0]   vbuf_byteenable,
+   output          vbuf_write,
+
+   // PLL HDMI Programming for Xilinx
+   input           pll_axi_aclk,
+   input           pll_axi_aresetn,
+   input [10 : 0]  pll_axi_awaddr,
+   input           pll_axi_awvalid,
+   output          pll_axi_awready,
+   input [31 : 0]  pll_axi_wdata,
+   input [3 : 0]   pll_axi_wstrb,
+   input           pll_axi_wvalid,
+   output          pll_axi_wready,
+   output [1 : 0]  pll_axi_bresp,
+   output          pll_axi_bvalid,
+   input           pll_axi_bready,
+   input [10 : 0]  pll_axi_araddr,
+   input           pll_axi_arvalid,
+   output          pll_axi_arready,
+   output [31 : 0] pll_axi_rdata,
+   output [1 : 0]  pll_axi_rresp,
+   output          pll_axi_rvalid,
+   input           pll_axi_rready
+
    );
+
+  logic          led_p;
+  logic          led_d;
+  logic          led_u;
+
+  wire           vga_fb;
+  wire           hdmi_clk_out;
+  wire           hdmi_tx_clk;
+  wire           direct_video;
+  wire           clk_sys;
+  wire [15:0]    audio_ls, audio_rs;
+  wire           audio_s;
+  wire [1:0]     audio_mix;
+  wire [1:0]     scanlines;
+  wire [7:0]     r_out, g_out, b_out, hr_out, hg_out, hb_out;
+  wire           vs_fix, hs_fix, de_emu, vs_emu, hs_emu, f1;
+  wire           hvs_fix, hhs_fix, hde_emu;
+  wire           clk_vid, ce_pix, clk_ihdmi, ce_hpix;
+
+  wire [1:0]     btn;
+
+
+  generate
+    if (FPGA_FAMILY == "CYCLONEV") begin : g_ALT_HDMI_CLK
+      cyclonev_clkselect hdmi_clk_sw
+        (
+         .clkselect          ({1'b1, ~vga_fb & direct_video}),
+         .inclk              ({clk_vid, hdmi_clk_out, 2'b00}),
+         .outclk             (hdmi_tx_clk)
+         );
+    end else begin : g_XIL_HDMI_CLK
+      BUFGMUX hdmi_clk_sw
+        (
+         .O                  (hdmi_tx_clk),
+         .I0                 (hdmi_clk_out),
+         .I1                 (clk_vid),
+         .S                  (~vga_fb & direct_video)
+         );
+    end
+  endgenerate
+
+`ifndef DUAL_SDRAM
+  assign LED_POWER = (SW[3] | led_p) ? 1'bZ : 1'b0;
+  assign LED_HDD   = (SW[3] | led_d) ? 1'bZ : 1'b0;
+  assign LED_USER  = (SW[3] | led_u) ? 1'bZ : 1'b0;
+`endif
 
   //////////////////////  Secondary SD  ///////////////////////////////////
   wire SD_CS, SD_CLK, SD_MOSI;
@@ -172,11 +299,11 @@ module sys_top
   //LEDs on main board
   assign LED = (led_overtake & led_state) | (~led_overtake & {1'b0,led_locked,1'b0, ~led_p, 1'b0, ~led_d, 1'b0, ~led_u});
 
-  wire      btn_r, btn_o, btn_u;
+  wire      btn_o, btn_u;
 `ifdef DUAL_SDRAM
-  assign {btn_r,btn_o,btn_u} = {mcp_btn[1],mcp_btn[2],mcp_btn[0]};
+  assign {reset_hps_cold_req,btn_o,btn_u} = {mcp_btn[1],mcp_btn[2],mcp_btn[0]};
 `else
-  assign {btn_r,btn_o,btn_u} = ~{BTN_RESET,BTN_OSD,BTN_USER} | {mcp_btn[1],mcp_btn[2],mcp_btn[0]};
+  assign {reset_hps_cold_req,btn_o,btn_u} = ~{BTN_RESET,BTN_OSD,BTN_USER} | {mcp_btn[1],mcp_btn[2],mcp_btn[0]};
 `endif
 
   wire [2:0] mcp_btn;
@@ -218,8 +345,7 @@ module sys_top
 
   // gp_in[31] = 0 - quick flag that FPGA is initialized (HPS reads 1 when FPGA is not in user mode)
   //                 used to avoid lockups while JTAG loading
-  wire [31:0] gp_in = {1'b0, btn_user | btn[1], btn_osd | btn[0], SW[3], 8'd0, io_ver, io_ack, io_wide, io_dout};
-  wire [31:0] gp_out;
+  wire [31:0] gp_in_int = {1'b0, btn_user | btn[1], btn_osd | btn[0], SW[3], 8'd0, io_ver, io_ack, io_wide, io_dout};
 
   wire [1:0]  io_ver = 1; // 0 - standard MiST I/O (for quick porting of complex MiST cores). 1 - optimized HPS I/O. 2,3 - reserved for future.
   wire        io_wait;
@@ -261,22 +387,18 @@ module sys_top
 `endif
 
   // HPS will not communicate to core if magic is different
-  wire [31:0]  core_magic = {24'h5CA623, core_type};
+  wire [31:0]  core_magic;
 
-  cyclonev_hps_interface_mpu_general_purpose h2f_gp
-    (
-     .gp_in({~gp_out[31] ? core_magic : gp_in}),
-     .gp_out(gp_out)
-     );
-
+  assign core_magic  = {24'h5CA623, core_type};
+  assign gp_in       = ~gp_out[31] ? core_magic : gp_in;
 
   reg [15:0]   cfg;
 
   reg          cfg_got      = 0;
   reg          cfg_set      = 0;
-  wire         vga_fb       = cfg[12];
+  assign vga_fb       = cfg[12];
   wire [1:0]   hdmi_limited = {cfg[11],cfg[8]};
-  wire         direct_video = cfg[10];
+  assign direct_video = cfg[10];
   wire         dvi_mode     = cfg[7];
   wire         audio_96k    = cfg[6];
   wire         csync_en     = cfg[3];
@@ -402,42 +524,14 @@ module sys_top
     end
   end
 
-  cyclonev_hps_interface_peripheral_uart uart
-    (
-     .ri(0)
-`ifndef ARCADE_SYS
-     ,
-     .dsr(uart_dsr),
-     .dcd(uart_dsr),
-     .dtr(uart_dtr),
-
-     .cts(uart_cts),
-     .rts(uart_rts),
-     .rxd(uart_rxd),
-     .txd(uart_txd)
-`endif
-     );
-
-  wire aspi_sck,aspi_mosi,aspi_ss,aspi_miso;
-  cyclonev_hps_interface_peripheral_spi_master spi
-    (
-     .sclk_out(aspi_sck),
-     .txd(aspi_mosi), // mosi
-     .rxd(aspi_miso), // miso
-
-     .ss_0_n(aspi_ss),
-     .ss_in_n(1)
-     );
-
-  wire [63:0] f2h_irq = {HDMI_TX_VS};
-  cyclonev_hps_interface_interrupts interrupts
-    (
-     .irq(f2h_irq)
-     );
+  assign f2h_irq = {HDMI_TX_VS};
 
   ///////////////////////////  RESET  ///////////////////////////////////
 
-  reg         reset_req = 0;
+  initial begin
+    reset_req  = '0;
+  end
+
   always @(posedge FPGA_CLK2_50) begin
     reg [1:0] resetd, resetd2;
     reg       old_reset;
@@ -455,75 +549,12 @@ module sys_top
     resetd2 <= resetd;
   end
 
-  wire        clk_100m;
   wire        clk_hdmi  = hdmi_clk_out;
-  wire        clk_audio = FPGA_CLK3_50;
+  assign clk_audio = FPGA_CLK3_50;
   wire        clk_pal   = FPGA_CLK3_50;
 
-  ////////////////////  SYSTEM MEMORY & SCALER  /////////////////////////
-
-  wire        reset;
-  sysmem_lite sysmem
-    (
-     //Reset/Clock
-     .reset_core_req(reset_req),
-     .reset_out(reset),
-     .clock(clk_100m),
-
-     //DE10-nano has no reset signal on GPIO, so core has to emulate cold reset button.
-     .reset_hps_cold_req(btn_r),
-
-`ifdef USE_DDRAM
-     //64-bit DDR3 RAM access
-     .ram1_clk(ram_clk),
-     .ram1_address(ram_address),
-     .ram1_burstcount(ram_burstcount),
-     .ram1_waitrequest(ram_waitrequest),
-     .ram1_readdata(ram_readdata),
-     .ram1_readdatavalid(ram_readdatavalid),
-     .ram1_read(ram_read),
-     .ram1_writedata(ram_writedata),
-     .ram1_byteenable(ram_byteenable),
-     .ram1_write(ram_write),
-`endif
-
-     //64-bit DDR3 RAM access
-     .ram2_clk(clk_audio),
-     .ram2_address(ram2_address),
-     .ram2_burstcount(ram2_burstcount),
-     .ram2_waitrequest(ram2_waitrequest),
-     .ram2_readdata(ram2_readdata),
-     .ram2_readdatavalid(ram2_readdatavalid),
-     .ram2_read(ram2_read),
-     .ram2_writedata(ram2_writedata),
-     .ram2_byteenable(ram2_byteenable),
-     .ram2_write(ram2_write),
-
-     //128-bit DDR3 RAM access
-     // HDMI frame buffer
-     .vbuf_clk(clk_100m),
-     .vbuf_address(vbuf_address),
-     .vbuf_burstcount(vbuf_burstcount),
-     .vbuf_waitrequest(vbuf_waitrequest),
-     .vbuf_writedata(vbuf_writedata),
-     .vbuf_byteenable(vbuf_byteenable),
-     .vbuf_write(vbuf_write),
-     .vbuf_readdata(vbuf_readdata),
-     .vbuf_readdatavalid(vbuf_readdatavalid),
-     .vbuf_read(vbuf_read)
-     );
-
-  wire [28:0] ram2_address;
-  wire [7:0]  ram2_burstcount;
-  wire [7:0]  ram2_byteenable;
-  wire        ram2_waitrequest;
-  wire [63:0] ram2_readdata;
-  wire [63:0] ram2_writedata;
-  wire        ram2_readdatavalid;
-  wire        ram2_read;
-  wire        ram2_write;
+  ////////////////////  SCALER  /////////////////////////
   wire [7:0]  ram2_bcnt;
-
   ddr_svc ddr_svc
     (
      .clk(clk_audio),
@@ -552,16 +583,6 @@ module sys_top
      .ch1_ready(pal_wr)
      );
 
-
-  wire [27:0] vbuf_address;
-  wire [7:0]  vbuf_burstcount;
-  wire        vbuf_waitrequest;
-  wire [127:0] vbuf_readdata;
-  wire         vbuf_readdatavalid;
-  wire         vbuf_read;
-  wire [127:0] vbuf_writedata;
-  wire [15:0]  vbuf_byteenable;
-  wire         vbuf_write;
 
   wire [23:0]  hdmi_data;
   wire         hdmi_vs, hdmi_hs, hdmi_de;
@@ -741,15 +762,60 @@ module sys_top
 
   /////////////////////////  HDMI output  /////////////////////////////////
 
-  wire  hdmi_clk_out;
-  pll_hdmi pll_hdmi
-    (
-     .refclk(FPGA_CLK1_50),
-     .rst(reset_req),
-     .reconfig_to_pll(reconfig_to_pll),
-     .reconfig_from_pll(reconfig_from_pll),
-     .outclk_0(hdmi_clk_out)
-     );
+  generate
+    if (FPGA_FAMILY == "CYCLONEV") begin : g_ALT_PLL
+      pll_cfg pll_cfg
+        (
+         .mgmt_clk          (FPGA_CLK1_50),
+         .mgmt_reset        (reset_req),
+         .mgmt_waitrequest  (cfg_waitrequest),
+         .mgmt_read         (0),
+         .mgmt_readdata     (),
+         .mgmt_write        (cfg_write),
+         .mgmt_address      (cfg_address),
+         .mgmt_writedata    (cfg_data),
+         .reconfig_to_pll   (reconfig_to_pll),
+         .reconfig_from_pll (reconfig_from_pll)
+         );
+
+      pll_hdmi pll_hdmi
+        (
+         .refclk    (FPGA_CLK1_50),
+         .rst       (reset_req),
+         .outclk_0  (hdmi_clk_out)
+         );
+    end else begin : g_XIL_PLL
+
+      pll_hdmi pll_hdmi
+        (
+         .s_axi_aclk      (FPGA_CLK1_50),
+         .s_axi_aresetn   (~reset_req),
+         .s_axi_awaddr    (pll_axi_awaddr), // in
+         .s_axi_awvalid   (pll_axi_awvalid), // in
+         .s_axi_awready   (pll_axi_awready),
+         .s_axi_wdata     (pll_axi_wdata), // in
+         .s_axi_wstrb     (pll_axi_wstrb), // in
+         .s_axi_wvalid    (pll_axi_wvalid), // in
+         .s_axi_wready    (pll_axi_wready),
+         .s_axi_bresp     (pll_axi_bresp),
+         .s_axi_bvalid    (pll_axi_bvalid),
+         .s_axi_bready    (pll_axi_bready), // in
+         .s_axi_araddr    (pll_axi_araddr), // in
+         .s_axi_arvalid   (pll_axi_arvalid), // in
+         .s_axi_arready   (pll_axi_arready),
+         .s_axi_rdata     (pll_axi_rdata),
+         .s_axi_rresp     (pll_axi_rresp),
+         .s_axi_rvalid    (pll_axi_rvalid),
+         .s_axi_rready    (pll_axi_rready), // in
+         // Clock out ports
+         .clk_out1        (hdmi_clk_out),
+         // Status and control signals
+         .locked          (),
+         // Clock in ports
+         .clk_in1         (FPGA_CLK1_50)
+         );
+    end
+  endgenerate
 
   //1920x1080@60 PCLK=148.5MHz CEA
   reg [11:0] WIDTH  = 1920;
@@ -770,20 +836,6 @@ module sys_top
   reg         adj_write;
   reg [5:0]   adj_address;
   reg [31:0]  adj_data;
-
-  pll_cfg pll_cfg
-    (
-     .mgmt_clk(FPGA_CLK1_50),
-     .mgmt_reset(reset_req),
-     .mgmt_waitrequest(cfg_waitrequest),
-     .mgmt_read(0),
-     .mgmt_readdata(),
-     .mgmt_write(cfg_write),
-     .mgmt_address(cfg_address),
-     .mgmt_writedata(cfg_data),
-     .reconfig_to_pll(reconfig_to_pll),
-     .reconfig_from_pll(reconfig_from_pll)
-     );
 
   reg         cfg_ready = 0;
 
@@ -919,38 +971,37 @@ module sys_top
     dv_vs  <= dv_vs2;
   end
 
-  wire hdmi_tx_clk;
-  cyclonev_clkselect hdmi_clk_sw
-    (
-      .clkselect({1'b1, ~vga_fb & direct_video}),
-      .inclk({clk_vid, hdmi_clk_out, 2'b00}),
-      .outclk(hdmi_tx_clk)
-      );
-
-  altddio_out
-    #(
-      .extend_oe_disable("OFF"),
-      .intended_device_family("Cyclone V"),
-      .invert_output("OFF"),
-      .lpm_hint("UNUSED"),
-      .lpm_type("altddio_out"),
-      .oe_reg("UNREGISTERED"),
-      .power_up_high("OFF"),
-      .width(1)
-      )
-  hdmiclk_ddr
-    (
-     .datain_h(1'b0),
-     .datain_l(1'b1),
-     .outclock(hdmi_tx_clk),
-     .dataout(HDMI_TX_CLK),
-     .aclr(1'b0),
-     .aset(1'b0),
-     .oe(1'b1),
-     .outclocken(1'b1),
-     .sclr(1'b0),
-     .sset(1'b0)
-     );
+  generate
+    if (FPGA_FAMILY == "CYCLONEV") begin : g_HDMI_TX_CLK
+      altddio_out
+        #
+        (
+         .extend_oe_disable("OFF"),
+         .intended_device_family("Cyclone V"),
+         .invert_output("OFF"),
+         .lpm_hint("UNUSED"),
+         .lpm_type("altddio_out"),
+         .oe_reg("UNREGISTERED"),
+         .power_up_high("OFF"),
+         .width(1)
+         )
+      hdmiclk_ddr
+        (
+         .datain_h(1'b0),
+         .datain_l(1'b1),
+         .outclock(hdmi_tx_clk),
+         .dataout(HDMI_TX_CLK),
+         .aclr(1'b0),
+         .aset(1'b0),
+         .oe(1'b1),
+         .outclocken(1'b1),
+         .sclr(1'b0),
+         .sset(1'b0)
+         );
+    end else begin : g_PASSTHROUGH // block: g_HDMI_TX_CLK
+      assign HDMI_TX_CLK  = hdmi_tx_clk;
+    end
+  endgenerate
 
   reg  hdmi_out_hs;
   reg  hdmi_out_vs;
@@ -1054,8 +1105,6 @@ module sys_top
   assign AUDIO_L     = SW[3] ? 1'bZ : SW[0] ? HDMI_SCLK  : anl;
 `endif
 
-  assign HDMI_MCLK = 0;
-
   wire [15:0]  audio_l, audio_l_pre;
   aud_mix_top audmix_l
     (
@@ -1155,34 +1204,6 @@ module sys_top
 
   ///////////////////  User module connection ////////////////////////////
 
-  wire         clk_sys;
-  wire [15:0]  audio_ls, audio_rs;
-  wire         audio_s;
-  wire [1:0]   audio_mix;
-  wire [1:0]   scanlines;
-  wire [7:0]   r_out, g_out, b_out, hr_out, hg_out, hb_out;
-  wire         vs_fix, hs_fix, de_emu, vs_emu, hs_emu, f1;
-  wire         hvs_fix, hhs_fix, hde_emu;
-  wire         clk_vid, ce_pix, clk_ihdmi, ce_hpix;
-
-`ifdef USE_DDRAM
-  wire         ram_clk;
-  wire [28:0]  ram_address;
-  wire [7:0]   ram_burstcount;
-  wire         ram_waitrequest;
-  wire [63:0]  ram_readdata;
-  wire         ram_readdatavalid;
-  wire         ram_read;
-  wire [63:0]  ram_writedata;
-  wire [7:0]   ram_byteenable;
-  wire         ram_write;
-`endif
-
-  wire         led_user;
-  wire [1:0]   led_power;
-  wire [1:0]   led_disk;
-  wire [1:0]   btn;
-
   sync_fix sync_v(clk_vid, vs_emu, vs_fix);
   sync_fix sync_h(clk_vid, hs_emu, hs_fix);
 
@@ -1210,12 +1231,6 @@ module sys_top
   assign hvs_fix  = vs_fix;
   assign hde_emu  = de_emu;
 
-  wire         uart_dtr;
-  wire         uart_dsr;
-  wire         uart_cts;
-  wire         uart_rts;
-  wire         uart_rxd;
-  wire         uart_txd;
   wire         osd_status;
 `endif
 
@@ -1259,9 +1274,9 @@ module sys_top
      .ADC_BUS({ADC_SCK,ADC_SDO,ADC_SDI,ADC_CONVST}),
 `endif
 
-     .LED_USER(led_user),
-     .LED_POWER(led_power),
-     .LED_DISK(led_disk),
+     .LED_USER(),
+     .LED_POWER(),
+     .LED_DISK(),
 
      .AUDIO_L(audio_ls),
      .AUDIO_R(audio_rs),
@@ -1331,28 +1346,127 @@ module sys_top
      .USER_IN(user_in)
      );
 
-`ifndef DUAL_SDRAM
-  assign LED_POWER = (SW[3] | led_p) ? 1'bZ : 1'b0;
-  assign LED_HDD   = (SW[3] | led_d) ? 1'bZ : 1'b0;
-  assign LED_USER  = (SW[3] | led_u) ? 1'bZ : 1'b0;
-`endif
+endmodule
 
-  subsys
-    #
-    (
-     .FPGA_FAMILY         (FPGA_FAMILY)
-     )
-  u_subsys
-    (
-     .FPGA_CLK1_50        (FPGA_CLK1_50),
-     .FPGA_CLK2_50        (FPGA_CLK2_50),
-     .FPGA_CLK3_50        (FPGA_CLK3_50),
+/////////////////////////////////////////////////////////////////////
 
-     .led_p               (led_p),
-     .led_d               (led_d),
-     .led_u               (led_u),
+module sync_fix
+  (
+   input  clk,
 
-     );
-  assign HDMI_MCLK = '0;
+   input  sync_in,
+   output sync_out
+   );
+
+  assign sync_out = sync_in ^ pol;
+
+  reg     pol;
+  always @(posedge clk) begin
+    integer pos = 0, neg = 0, cnt = 0;
+    reg     s1,s2;
+
+    s1 <= sync_in;
+    s2 <= s1;
+
+    if(~s2 & s1) neg <= cnt;
+    if(s2 & ~s1) pos <= cnt;
+
+    cnt <= cnt + 1;
+    if(s2 != s1) cnt <= 0;
+
+    pol <= pos > neg;
+  end
+
+endmodule
+
+/////////////////////////////////////////////////////////////////////
+
+module aud_mix_top
+  (
+   input             clk,
+
+   input [4:0]       att,
+   input [1:0]       mix,
+   input             is_signed,
+
+   input [15:0]      core_audio,
+   input [15:0]      linux_audio,
+   input [15:0]      pre_in,
+
+   output reg [15:0] pre_out,
+   output reg [15:0] out
+   );
+
+  reg [15:0]         ca;
+  always @(posedge clk) begin
+    reg [15:0] d1,d2,d3;
+
+    d1 <= core_audio; d2<=d1; d3<=d2;
+    if(d2 == d3) ca <= d2;
+  end
+
+  always @(posedge clk) begin
+    reg signed [16:0] a1, a2, a3, a4;
+
+    a1 <= is_signed ? {ca[15],ca} : {2'b00,ca[15:1]};
+    a2 <= a1 + {linux_audio[15],linux_audio};
+
+    pre_out <= a2[16:1];
+
+    case(mix)
+      0: a3 <= a2;
+      1: a3 <= $signed(a2) - $signed(a2[16:3]) + $signed(pre_in[15:2]);
+      2: a3 <= $signed(a2) - $signed(a2[16:2]) + $signed(pre_in[15:1]);
+      3: a3 <= {a2[16],a2[16:1]} + {pre_in[15],pre_in};
+    endcase
+
+    if(att[4]) a4 <= 0;
+    else a4 <= a3 >>> att[3:0];
+
+    //clamping
+    out <= ^a4[16:15] ? {a4[16],{15{a4[15]}}} : a4[15:0];
+  end
+
+endmodule
+
+/////////////////////////////////////////////////////////////////////
+
+// CSync generation
+// Shifts HSync left by 1 HSync period during VSync
+
+module csync
+  (
+   input  clk,
+   input  hsync,
+   input  vsync,
+
+   output csync
+   );
+
+  assign csync = (csync_vs ^ csync_hs);
+
+  reg     csync_hs, csync_vs;
+  always @(posedge clk) begin
+    reg prev_hs;
+    reg [15:0] h_cnt, line_len, hs_len;
+
+    // Count line/Hsync length
+    h_cnt <= h_cnt + 1'd1;
+
+    prev_hs <= hsync;
+    if (prev_hs ^ hsync) begin
+      h_cnt <= 0;
+      if (hsync) begin
+        line_len <= h_cnt - hs_len;
+        csync_hs <= 0;
+      end
+      else hs_len <= h_cnt;
+    end
+
+    if (~vsync) csync_hs <= hsync;
+    else if(h_cnt == line_len) csync_hs <= 1;
+
+    csync_vs <= vsync;
+  end
 
 endmodule
